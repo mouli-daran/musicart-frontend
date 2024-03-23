@@ -14,6 +14,7 @@ import imgCart from "../../../assets/imgCart.svg";
 import { useState, useEffect, useRef } from "react";
 import { getProduct, addToCart } from "../../../apis/product";
 import { useNavigate } from "react-router-dom";
+import Shimmer from "../../Shimmer/Shimmer";
 
 const Home = () => {
   const redirect = useNavigate();
@@ -21,13 +22,18 @@ const Home = () => {
   const [view, setView] = useState("list");
   const [product, setProduct] = useState(null);
   const [filterQuery, setFilterQuery] = useState({});
-  const productFetch = async () => {
-    const result = await getProduct(filterQuery);
-    console.log("result from homeee----", result.data);
-    setProduct(result.data);
-  };
+
   useEffect(() => {
-    productFetch();
+    const fetchData = async () => {
+      try {
+        const result = await getProduct(filterQuery);
+        setProduct(result.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchData();
   }, [filterQuery]);
 
   const handleCart = async (id) => {
@@ -96,10 +102,11 @@ const Home = () => {
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     if (value === "featured") {
-      setFilterQuery({ ...filterQuery, featured: true, [name]: "" });
+      setFilterQuery({});
     } else {
-      setFilterQuery({ ...filterQuery, [name]: value });
+      setFilterQuery({ ...filterQuery, [name]: value.toLowerCase() });
     }
+    // console.log("selected is=-----", name, value);
   };
 
   return (
@@ -168,12 +175,11 @@ const Home = () => {
               </option>
               <option value="featured">Featured</option>
               <option value="In ear">In-ear headphone</option>
-              <option value="On ear">On-ear headphobe</option>
-
+              <option value="On ear">On-ear headphone</option>
               <option value="Over ear">Over-ear headphone</option>
             </select>
 
-            <select name="company" onChange={handleFilterChange}>
+            <select name="brand" onChange={handleFilterChange}>
               <option value="" disabled selected hidden>
                 Company
               </option>
@@ -252,13 +258,13 @@ const Home = () => {
                     </div>
                     <div className={styles.productSpec}>
                       <span className={styles.productTitle}>
-                        {item.brand} {item.model}
+                        {item.brand} {item.heading}
                       </span>
                       <span className={styles.productPrice}>
                         Price-₹ {item.price}
                       </span>
                       <span className={styles.productType}>
-                        {item.color} | {item.headphoneType}
+                        {item.colour} | {item.headphoneType}
                       </span>
                     </div>
                   </div>
@@ -298,7 +304,7 @@ const Home = () => {
 
                     <div className={styles.productSpecLIst}>
                       <span className={styles.productListTitle}>
-                        {item.brand} {item.model}
+                        {item.brand} {item.heading}
                       </span>
                       <span className={styles.productListPrice}>
                         Price - ₹ {item.price}
@@ -307,7 +313,7 @@ const Home = () => {
                         {item.color} | {item.headphoneType}
                       </span>
                       <span className={styles.shortSpec}>
-                        {item.shortDescription}
+                        {item.detailHeading}
                       </span>
                       <button onClick={() => productDetailPage(item._id)}>
                         Details

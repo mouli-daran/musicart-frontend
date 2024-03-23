@@ -2,10 +2,10 @@ import styles from "./Header.module.css";
 import phoneIcon from "../../assets/phoneIcon.svg";
 import musicIcon from "../../assets/musicIcon.svg";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Header = () => {
-  //   const redirect = useNavigate();
+  const redirect = useNavigate();
   const [login, setLogin] = useState();
 
   return (
@@ -29,14 +29,14 @@ const Header = () => {
           </button>
         ) : (
           <>
-            <a href="/signin">Login</a> | <a href="/signup">Signup</a>
+            <Link to="/login">Login </Link> | <Link to="/signup">Sign Up </Link>
           </>
         )}
       </div>
       <div
         className={styles.mobileHeader}
         onClick={() => {
-          //   redirect("/");
+          redirect("/");
         }}
       >
         <img src={musicIcon} alt="musicIcon" />

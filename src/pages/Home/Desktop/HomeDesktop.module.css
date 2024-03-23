@@ -103,7 +103,7 @@
 
 .searchBox {
   margin-top: 5vh;
-  width: 100%;
+  width: 95%;
   height: 8vh;
   border: 3px solid rgba(200, 200, 200, 1);
   border-radius: 50px;
@@ -274,23 +274,25 @@
 .productSpec {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
 }
 
 .productTitle {
   font-family: Roboto;
   font-size: 2vw;
   font-weight: 600;
-  letter-spacing: 0em;
+  letter-spacing: 1px;
   color: rgba(0, 0, 0, 1);
 }
 
 .productPrice,
 .productType {
   font-family: Roboto;
-  font-size: 1.5vw;
+  font-size: 2vw;
   font-weight: 500;
   letter-spacing: 0em;
   text-align: left;
+  font-weight: 600;
 }
 
 .productContainerList {

@@ -5,13 +5,13 @@ import Footer from "../../components/Footer/Footer";
 import { ToastContainer, toast } from "react-toastify";
 import { useState } from "react";
 // import { register, login } from "../../apis/user";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const Signup = () => {
-  const redirect = useNavigate();
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     name: "",
     mobile: "",
@@ -21,24 +21,21 @@ const Signup = () => {
 
   const [errors, setErrors] = useState({});
 
-  console.log("user from frontend----", user);
+  // console.log("user from frontend----", user);
 
   const validateForm = () => {
     const { name, mobile, email, password } = user;
     const errors = {};
 
     if (!/^[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(name) || name === "") {
-      //   toast.error("Invalid Name");
       errors.name = "Invalid Name";
     }
 
     if (!/^(?!0)[0-9]{10}$/.test(mobile) || mobile === "") {
-      //   toast.error("Enter Valid mobile number");
       errors.mobile = "Enter Valid mobile number";
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      //   toast.error("Enter valid email");
       errors.email = "Enter valid email";
     }
 
@@ -47,14 +44,13 @@ const Signup = () => {
         password
       )
     ) {
-      //   toast.error(
-      //     "Password should contain at least one uppercase, one lowercase, one number, and one special character"
-      //   );
       errors.password =
         "Password should contain at least one uppercase, one lowercase, one number, and one special character";
     }
 
     setErrors(errors);
+
+    return Object.keys(errors).length === 0; // Return true if there are no errors
   };
 
   const handleSubmit = async (e) => {
@@ -68,11 +64,11 @@ const Signup = () => {
 
         console.log("response from frontend----", result);
 
-        if (result.status === "SUCCESS") {
-          localStorage.setItem("musicArtToken", result.jwtToken);
+        if (result) {
           toast.success("Registered Successfully");
+          localStorage.setItem("token", result.token); // Corrected from result.jwtToken
           setTimeout(() => {
-            redirect("/");
+            navigate("/");
           }, 2000);
         } else {
           toast.error(result.message);
@@ -170,7 +166,7 @@ const Signup = () => {
         </div>
         <aside className={styles.bottomPart}>
           <span>Already have an account?</span>
-          <a href="/signin">Sign In</a>
+          <Link to="/login">Sign In</Link>
         </aside>
       </div>
       <Footer />
