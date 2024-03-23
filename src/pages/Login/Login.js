@@ -45,10 +45,12 @@ const Login = () => {
           `http://localhost:4000/api/v1/login`,
           user
         );
-        const result = response.data;
 
-        if (result?.status === "SUCCESS") {
-          localStorage.setItem("musicArtToken", result.jwtToken);
+        const result = response.data;
+        console.log("result from login  is ---", result);
+
+        if (result) {
+          localStorage.setItem("token", result.token);
           toast.success(result.message);
           setTimeout(() => {
             redirect("/");
@@ -84,7 +86,9 @@ const Login = () => {
               onChange={(e) => setUser({ ...user, email: e.target.value })}
             />
             {errors.email && (
-              <span className={styles.error}>{errors.email}</span>
+              <span style={{ color: "red", fontSize: "0.8em" }}>
+                * {errors.email}
+              </span>
             )}
           </div>
           <div>
@@ -95,7 +99,9 @@ const Login = () => {
               onChange={(e) => setUser({ ...user, password: e.target.value })}
             />
             {errors.password && (
-              <span className={styles.error}>{errors.password}</span>
+              <span style={{ color: "red", fontSize: "0.8em" }}>
+                * {errors.password}
+              </span>
             )}
           </div>
           <button onClick={handleSumbit}>Continue</button>

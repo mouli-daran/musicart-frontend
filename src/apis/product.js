@@ -1,5 +1,5 @@
 import axios from "axios";
-const backendUrL = process.env.REACT_APP_BACKEND_URL;
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 export const getProduct = async (filterQuery) => {
   try {
@@ -21,7 +21,7 @@ export const getProduct = async (filterQuery) => {
 
 export const addToCart = async (id, quantity, replaceQuantity) => {
   try {
-    const requrl = `${backendUrL}/addToCart`;
+    const requrl = `${backendUrl}/addToCart`;
     const storedToken = localStorage.getItem("musicArtToken");
     const config = {
       headers: {
@@ -43,8 +43,26 @@ export const addToCart = async (id, quantity, replaceQuantity) => {
 
 export const getProductDetails = async (id) => {
   try {
-    const requrl = `${backendUrL}/product/${id}`;
+    const requrl = `${backendUrl}/product/${id}`;
     const response = await axios.get(requrl);
+    return response.data;
+  } catch (error) {
+    if (error) {
+      return error.response.data;
+    }
+  }
+};
+
+export const getCartProduct = async () => {
+  try {
+    const requrl = `${backendUrl}/cartproducts`;
+    const storedToken = localStorage.getItem("musicArtToken");
+    const config = {
+      headers: {
+        token: storedToken,
+      },
+    };
+    const response = await axios.get(requrl, config);
     return response.data;
   } catch (error) {
     if (error) {

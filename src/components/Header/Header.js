@@ -1,12 +1,28 @@
 import styles from "./Header.module.css";
 import phoneIcon from "../../assets/phoneIcon.svg";
 import musicIcon from "../../assets/musicIcon.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 const Header = () => {
   const redirect = useNavigate();
-  const [login, setLogin] = useState();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    // You may want to redirect the user to the home page or another page after logging out
+    // redirect("/");
+  };
 
   return (
     <header className={styles.desktopHeader}>
@@ -18,18 +34,9 @@ const Header = () => {
         <span>Get 50% off on selected items | Shop Now</span>
       </div>
       <div className={styles.rightBox}>
-        {login ? (
-          <button
-            onClick={() => {
-              setLogin(false);
-              localStorage.removeItem("token");
-            }}
-          >
-            Logout
-          </button>
-        ) : (
+        {isLoggedIn ? null : (
           <>
-            <Link to="/login">Login </Link> | <Link to="/signup">Sign Up </Link>
+            <Link to="/login">Login</Link> | <Link to="/signup">Sign Up</Link>
           </>
         )}
       </div>

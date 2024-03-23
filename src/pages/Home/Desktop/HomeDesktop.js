@@ -13,7 +13,7 @@ import filledList from "../../../assets/filledList.svg";
 import imgCart from "../../../assets/imgCart.svg";
 import { useState, useEffect, useRef } from "react";
 import { getProduct, addToCart } from "../../../apis/product";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Shimmer from "../../Shimmer/Shimmer";
 
 const Home = () => {
@@ -119,7 +119,7 @@ const Home = () => {
           <div className={styles.titleNav}>
             <img src={musicIcon} alt="musicIcon" />
             <span>Musicart</span>
-            <a href="/">Home</a>
+            <Link to="/">Home</Link>
           </div>
           <div
             className={styles.cart}
