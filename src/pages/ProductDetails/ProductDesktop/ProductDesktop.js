@@ -20,12 +20,13 @@ const ProductDetailsDesktop = () => {
   const [productDetails, setProductDetails] = useState(null);
   const [cartLength, setCartLength] = useState(0);
   const [login, setLogin] = useState(
-    localStorage.getItem("musicArtToken") ? true : false
+    localStorage.getItem("token") ? true : false
   );
 
   useEffect(() => {
     getProductDetails(id).then((data) => {
       setProductDetails(data.data);
+      console.log("products results is ---ss---", data);
     });
     getCartProduct().then((data) => {
       if (data.status === "SUCCESS") {
@@ -93,7 +94,7 @@ const ProductDetailsDesktop = () => {
         ) : (
           <>
             <div className={styles.productDescriptionHeader}>
-              {productDetails.shortDescription}
+              {productDetails.detailHeading}
             </div>
             <section className={styles.fullProductDetails}>
               <div className={styles.imageBox}>
@@ -128,31 +129,33 @@ const ProductDetailsDesktop = () => {
               </div>
               <div className={styles.productTextDetail}>
                 <h1 className={styles.productTitle}>
-                  {productDetails.brand} {productDetails.model}
+                  {productDetails.brand} {productDetails.heading}
                 </h1>
                 <div className={styles.ratingBox}>
-                  {stars.map((item) => {
-                    return <img key={item} src={starImage} alt="star icon" />;
-                  })}
-                  <span>({productDetails.reviewCount} Customer reviews)</span>
+                  {[...Array(5)].map((_, index) => (
+                    <img key={index} src={starImage} alt="star icon" />
+                  ))}
+                  <span className={styles.reviewSpan}>
+                    (50 Customer reviews)
+                  </span>
                 </div>
                 <span className={styles.price}>
                   Price-₹{productDetails.price}
                 </span>
                 <span className={styles.colorType}>
-                  {productDetails.color} | {productDetails.headphoneType}
+                  {productDetails.colour} | {productDetails.headphoneType}
                 </span>
                 <div className={styles.aboutProduct}>
-                  <span>About this item</span>
+                  <p>About this item</p>
                   <ul>
-                    {productDetails.about.map((item, index) => {
+                    {productDetails.aboutThisItem.map((item, index) => {
                       return <li key={index}>{item}</li>;
                     })}
                   </ul>
                 </div>
                 <div className={styles.availableAndBrand}>
                   <div>
-                    <span>Available -</span>
+                    <span>Available - In Stock</span>
                     <span> {productDetails.available}</span>
                   </div>
                   <div>

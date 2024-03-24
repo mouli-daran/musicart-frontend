@@ -9,7 +9,7 @@ import styles from "./MobileNavFooter.module.css";
 const MobileNavFooter = (prop) => {
   const redirect = useNavigate();
   const [login, setLogin] = useState(
-    localStorage.getItem("musicArtToken") ? true : false
+    localStorage.getItem("token") ? true : false
   );
   const [selected, setSelected] = useState(prop.component);
   return (
@@ -39,10 +39,10 @@ const MobileNavFooter = (prop) => {
       <div
         onClick={() => {
           if (!login) {
-            redirect("/signin");
+            redirect("/login");
           }
           if (login) {
-            localStorage.removeItem("musicArtToken");
+            localStorage.removeItem("token");
           }
         }}
       >

@@ -145,14 +145,15 @@
 }
 
 .ratingBox > span {
-  font-size: 1.3vw;
+  font-size: 1rem;
   font-weight: 400;
   letter-spacing: 0em;
   margin-left: 1vh;
 }
 
 .ratingBox > img {
-  height: 70%;
+  height: 50%;
+  width: 20px;
 }
 
 .price {
@@ -177,9 +178,15 @@
   text-align: left;
 }
 
+.aboutProduct > p {
+  font-size: 1rem;
+}
+
 .aboutProduct > ul {
-  margin-top: 0.5vh;
+  margin-top: 0.3vh;
   padding-left: 3vw;
+  font-size: 1rem;
+  line-height: 1.3rem;
 }
 
 .availableAndBrand > div > span:first-child {

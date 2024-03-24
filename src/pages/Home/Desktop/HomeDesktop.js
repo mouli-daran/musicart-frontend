@@ -51,51 +51,48 @@ const Home = () => {
   };
 
   const handleSort = (e) => {
-    if (e.target.value === "featured") {
-      setFilterQuery({
-        ...filterQuery,
-        featured: true,
-        sortPrice: "",
-        sortName: "",
-      });
-    } else if (e.target.value === "PriceLowest") {
-      setFilterQuery({
-        ...filterQuery,
-        sortPrice: 1,
-        sortName: "",
-      });
-    } else if (e.target.value === "PriceHighest") {
-      setFilterQuery({
-        ...filterQuery,
-        sortPrice: -1,
-        sortName: "",
-      });
-    } else if (e.target.value === "a-z") {
-      setFilterQuery({
-        ...filterQuery,
-        sortName: 1,
-        sortPrice: "",
-      });
-    } else {
-      setFilterQuery({
-        ...filterQuery,
-        sortName: -1,
-        sortPrice: "",
-      });
+    const selectedSortOption = e.target.value;
+
+    console.log("handlesprt selected is--", selectedSortOption);
+    let sortedProducts = [...product]; // Make a copy of the original product state
+
+    switch (selectedSortOption) {
+      case "PriceLowest":
+        sortedProducts.sort((a, b) => a.price - b.price);
+        break;
+      case "PriceHighest":
+        sortedProducts.sort((a, b) => b.price - a.price);
+        break;
+      case "a-z":
+        sortedProducts.sort((a, b) =>
+          a.name && b.name ? a.name.localeCompare(b.name) : 0
+        );
+        break;
+      case "z-a":
+        sortedProducts.sort((a, b) =>
+          a.name && b.name ? b.name.localeCompare(a.name) : 0
+        );
+        break;
+      default:
+        // Default case or "featured", do nothing (maintain original order)
+        break;
     }
+
+    setProduct(sortedProducts);
   };
 
   const handlePriceFilter = (e) => {
     if (e.target.value === "featured") {
-      setFilterQuery({
-        ...filterQuery,
-        featured: true,
-        minPrice: 0,
-        maxPrice: 20000,
-      });
+      setFilterQuery({});
     } else {
       const [minPrice, maxPrice] = e.target.value.split("-").map(Number);
-      setFilterQuery({ ...filterQuery, minPrice, maxPrice });
+      console.log("selevted price range----", filterQuery);
+      setFilterQuery((prevState) => ({
+        ...prevState, // Spread previous state
+        featured: false, // Ensure featured flag is set to false
+        minPrice,
+        maxPrice,
+      }));
     }
   };
 
