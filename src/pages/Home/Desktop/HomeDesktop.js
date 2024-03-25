@@ -37,11 +37,20 @@ const Home = () => {
   }, [filterQuery]);
 
   const handleCart = async (id) => {
-    const result = await addToCart(id, 1);
-    if (result.status === "SUCCESS") {
-      toast.success("Added To Cart");
-    } else {
-      toast.error(result.message);
+    const products = [{ id, quantity: 1, replaceQuantity: false }];
+    console.log("product id addd result is--", id);
+    try {
+      const result = await addToCart(products);
+      console.log("Product add result:", result);
+
+      if (result.status === "SUCCESS") {
+        toast.success("Added To Cart");
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Failed to add to cart");
     }
   };
 

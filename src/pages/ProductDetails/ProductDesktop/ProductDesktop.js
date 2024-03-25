@@ -42,12 +42,21 @@ const ProductDetailsDesktop = () => {
     }
   }
 
-  const handleCart = async () => {
-    const result = await addToCart(id, 1, false);
-    if (result.status === "SUCCESS") {
-      toast.success("Added To Cart");
-    } else {
-      toast.error(result.message);
+  const handleCart = async (id) => {
+    const products = [{ id, quantity: 1, replaceQuantity: false }];
+    console.log("product id addd result is--", id);
+    try {
+      const result = await addToCart(products);
+      console.log("Product add result:", result);
+
+      if (result.status === "SUCCESS") {
+        toast.success("Added To Cart");
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Failed to add to cart");
     }
   };
 
@@ -165,7 +174,9 @@ const ProductDetailsDesktop = () => {
                 </div>
                 {login ? (
                   <div className={styles.buttons}>
-                    <button onClick={handleCart}>Add to cart</button>
+                    <button onClick={() => handleCart(productDetails._id)}>
+                      Add to cart
+                    </button>
                     <button
                       onClick={() => {
                         redirect(`/checkout/${productDetails._id}`);
@@ -179,7 +190,7 @@ const ProductDetailsDesktop = () => {
                     <div>
                       <span
                         onClick={() => {
-                          redirect("/signin");
+                          redirect("/login");
                         }}
                       >
                         Login
