@@ -19,20 +19,19 @@ export const getProduct = async (filterQuery) => {
   }
 };
 
-export const addToCart = async (id, quantity, replaceQuantity) => {
+export const addToCart = async (products) => {
   try {
-    const requrl = `${backendUrl}/addToCart`;
-    const storedToken = localStorage.getItem("musicArtToken");
+    const requrl = `${backendUrl}/cart`;
+    const token = localStorage.getItem("token");
     const config = {
       headers: {
-        token: storedToken,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     };
-    let payLoad = { id, quantity, replaceQuantity: false };
-    if (replaceQuantity) {
-      payLoad = { id, quantity, replaceQuantity: true };
-    }
-    const response = await axios.put(requrl, payLoad, config);
+
+    const response = await axios.put(requrl, { products }, config);
+    console.log("add to cart response form api frontend is ---", response);
     return response.data;
   } catch (error) {
     if (error) {
@@ -56,10 +55,11 @@ export const getProductDetails = async (id) => {
 export const getCartProduct = async () => {
   try {
     const requrl = `${backendUrl}/cartproducts`;
-    const storedToken = localStorage.getItem("musicArtToken");
+    const token = localStorage.getItem("token");
     const config = {
       headers: {
-        token: storedToken,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     };
     const response = await axios.get(requrl, config);
