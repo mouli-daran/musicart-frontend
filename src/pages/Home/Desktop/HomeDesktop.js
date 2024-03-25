@@ -12,7 +12,7 @@ import listIcon from "../../../assets/list.svg";
 import filledList from "../../../assets/filledList.svg";
 import imgCart from "../../../assets/imgCart.svg";
 import { useState, useEffect, useRef } from "react";
-import { getProduct, addToCart } from "../../../apis/product";
+import { getProduct, addToCart, getCartProduct } from "../../../apis/product";
 import { Link, useNavigate } from "react-router-dom";
 import Shimmer from "../../Shimmer/Shimmer";
 
@@ -21,6 +21,7 @@ const Home = () => {
   const cartRef = useRef(null);
   const [view, setView] = useState("list");
   const [product, setProduct] = useState(null);
+  const [cartLength, setCartLength] = useState();
   const [filterQuery, setFilterQuery] = useState({});
 
   useEffect(() => {
@@ -35,6 +36,14 @@ const Home = () => {
 
     fetchData();
   }, [filterQuery]);
+
+  useEffect(() => {
+    getCartProduct().then((data) => {
+      if (data.status === "SUCCESS") {
+        setCartLength(data.data.length);
+      }
+    });
+  }, []);
 
   const handleCart = async (id) => {
     const products = [{ id, quantity: 1, replaceQuantity: false }];
@@ -134,7 +143,7 @@ const Home = () => {
             }}
           >
             <img src={cart} alt="cartIcon" />
-            <span>View Cart</span>
+            <span>View Cart {cartLength}</span>
           </div>
         </section>
         <section className={styles.saleBanner}>
