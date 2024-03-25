@@ -33,11 +33,25 @@ const ProductMobile = () => {
   }
 
   const handleCart = async () => {
-    const result = await addToCart(id, 1, false);
-    if (result.status === "SUCCESS") {
-      toast.success("Added To Cart");
-    } else {
-      toast.error(result.message);
+    if (!productDetails || !productDetails._id) {
+      console.error("Product details are not available.");
+      return;
+    }
+
+    try {
+      const result = await addToCart([
+        { id: productDetails._id, quantity: 1, replaceQuantity: false },
+      ]);
+      console.log("Product add result:", result);
+
+      if (result.status === "SUCCESS") {
+        toast.success("Added To Cart");
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Failed to add to cart");
     }
   };
 
@@ -240,18 +254,6 @@ const ProductMobile = () => {
         )}
       </div>
       <MobileNavFooter component={"home"} />
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
     </>
   );
 };
