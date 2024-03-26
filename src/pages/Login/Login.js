@@ -51,6 +51,7 @@ const Login = () => {
 
         if (result) {
           localStorage.setItem("token", result.token);
+          localStorage.setItem("username", result?.user?.name);
           toast.success(result.message);
           setTimeout(() => {
             redirect("/");

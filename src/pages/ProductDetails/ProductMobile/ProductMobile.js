@@ -7,7 +7,11 @@ import next from "../../../assets/next.svg";
 import previous from "../../../assets/prev.svg";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { getProductDetails, addToCart } from "../../../apis/product";
+import {
+  getProductDetails,
+  addToCart,
+  getCartProduct,
+} from "../../../apis/product";
 import backIcon from "../../../assets/backIcon.svg";
 
 const ProductMobile = () => {
@@ -15,15 +19,28 @@ const ProductMobile = () => {
   const { id } = useParams();
   const [productDetails, setProductDetails] = useState(null);
   const [slideCounter, setSlideCounter] = useState(0);
+  const [products, setProducts] = useState(null);
   const [login, setLogin] = useState(
     localStorage.getItem("token") ? true : false
   );
+  const [cartLength, setCartLength] = useState(0);
 
   useEffect(() => {
     getProductDetails(id).then((data) => {
       setProductDetails(data.data);
     });
   }, []);
+
+  const updateCartLength = async () => {
+    try {
+      const data = await getCartProduct();
+      if (data.status === "SUCCESS") {
+        setCartLength(data.data.length);
+      }
+    } catch (error) {
+      console.error("Error fetching cart length:", error);
+    }
+  };
 
   let stars = [];
   if (productDetails) {
@@ -46,6 +63,7 @@ const ProductMobile = () => {
 
       if (result.status === "SUCCESS") {
         toast.success("Added To Cart");
+        updateCartLength();
       } else {
         toast.error(result.message);
       }
@@ -253,7 +271,11 @@ const ProductMobile = () => {
           </div>
         )}
       </div>
-      <MobileNavFooter component={"home"} />
+      <MobileNavFooter
+        component={"home"}
+        cartLength={cartLength}
+        updateCartLength={updateCartLength}
+      />
     </>
   );
 };

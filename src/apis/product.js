@@ -70,3 +70,39 @@ export const getCartProduct = async () => {
     }
   }
 };
+
+export const orderPlace = async (
+  name,
+  address,
+  paymentMethod,
+  productId,
+  orderFromCart
+) => {
+  try {
+    const reqUrl = `${backendUrl}/placeorder`;
+
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const payLoad = {
+      name: name,
+      address: address,
+      paymentMethod: paymentMethod,
+      orderFromCart: orderFromCart,
+      productId: productId,
+    };
+
+    const response = await axios.put(reqUrl, payLoad, config);
+    return response.data;
+  } catch (error) {
+    console.error("Error placing order:", error);
+    return error.response
+      ? error.response.data
+      : { message: "Internal server error" };
+  }
+};
