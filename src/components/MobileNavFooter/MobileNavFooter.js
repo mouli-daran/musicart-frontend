@@ -2,28 +2,24 @@ import homeIcon from "../../assets/homeIcon.svg";
 import logoutIcon from "../../assets/logout.svg";
 import loginIcon from "../../assets/loginIcon.svg";
 import cartIcon from "../../assets/cartIcon.svg";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./MobileNavFooter.module.css";
 import { getCartProduct } from "../../apis/product";
 
-const MobileNavFooter = (prop) => {
+const MobileNavFooter = ({ component, cartLength, updateCartLength }) => {
   const redirect = useNavigate();
   const [login, setLogin] = useState(
     localStorage.getItem("token") ? true : false
   );
-  const [selected, setSelected] = useState(prop.component);
-  const [products, setProducts] = useState(null);
+  const [selected, setSelected] = useState(component);
 
-  useEffect(() => {
-    getCartProduct().then((data) => {
-      if (data.status === "SUCCESS") {
-        setProducts(data.data.length);
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   updateCartLength();
+  // }, [updateCartLength]);
 
-  console.log("navfooter length is ---", products);
+  console.log("navfooter length is ---", cartLength);
+
   return (
     <div className={styles.footerNav}>
       <div onClick={() => setSelected("home")}>
@@ -47,7 +43,7 @@ const MobileNavFooter = (prop) => {
           }}
         />
         <span>Cart</span>
-        <p className={styles.carLength}>{products}</p>
+        <p className={styles.carLength}>{cartLength}</p>
       </div>
       <div
         onClick={() => {

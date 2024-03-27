@@ -23,6 +23,27 @@ const Home = () => {
   const [product, setProduct] = useState(null);
   const [cartLength, setCartLength] = useState();
   const [filterQuery, setFilterQuery] = useState({});
+  const [initials, setInitials] = useState("");
+  const [username, setUsername] = useState("");
+  const [isClicked, setIsClicked] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const name = localStorage.getItem("username");
+    setUsername(name);
+
+    if (name) {
+      const initials = name
+        .split(" ")
+        .map((word) => word.charAt(0))
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
+      setInitials(initials);
+      setLoggedIn(true);
+    }
+  }, []);
+  console.log("initials name is  -----00----", username);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,6 +146,19 @@ const Home = () => {
     // console.log("selected is=-----", name, value);
   };
 
+  const handleNameClick = () => {
+    setIsClicked(!isClicked);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    toast.success("Logged out successfully");
+    setInitials("");
+    setLoggedIn(false);
+    window.location.reload();
+  };
+
   return (
     <>
       <div className={styles.header}>
@@ -136,15 +170,39 @@ const Home = () => {
             <img src={musicIcon} alt="musicIcon" />
             <span>Musicart</span>
             <Link to="/">Home</Link>
+            <Link to="/invoice">Invoice</Link>
           </div>
-          <div
-            className={styles.cart}
-            onClick={() => {
-              redirect("/cart");
-            }}
-          >
-            <img src={cart} alt="cartIcon" />
-            <span>View Cart {cartLength}</span>
+          <div className={styles.cartIcon}>
+            <div
+              className={styles.cart}
+              onClick={() => {
+                redirect("/cart");
+              }}
+            >
+              <img src={cart} alt="cartIcon" />
+              <span>View Cart {cartLength}</span>
+            </div>
+            {loggedIn && (
+              <div className={styles.nameInitial} onClick={handleNameClick}>
+                <div className={styles.initialIcon}>
+                  <p>{initials}</p>
+                </div>
+
+                {isClicked && (
+                  <>
+                    <div className={styles.logoutBtn}>
+                      <span>{username}</span>
+                      <span
+                        className={styles.logoutSpan}
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </section>
         <section className={styles.saleBanner}>
