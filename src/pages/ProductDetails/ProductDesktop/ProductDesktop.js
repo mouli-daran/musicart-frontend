@@ -60,6 +60,10 @@ const ProductDetailsDesktop = () => {
     }
   };
 
+  const handleBuyNow = () => {
+    redirect(`/checkout/${productDetails._id}`);
+  };
+
   return (
     <>
       <section className={styles.header}>
@@ -177,13 +181,7 @@ const ProductDetailsDesktop = () => {
                     <button onClick={() => handleCart(productDetails._id)}>
                       Add to cart
                     </button>
-                    <button
-                      onClick={() => {
-                        redirect(`/checkout/${productDetails._id}`);
-                      }}
-                    >
-                      Buy Now
-                    </button>
+                    <button onClick={handleBuyNow}>Buy Now</button>
                   </div>
                 ) : (
                   <div className={styles.buttons}>
@@ -214,18 +212,6 @@ const ProductDetailsDesktop = () => {
       <section className={styles.footer}>
         <Footer />
       </section>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
     </>
   );
 };

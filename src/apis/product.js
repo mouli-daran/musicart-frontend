@@ -44,6 +44,7 @@ export const getProductDetails = async (id) => {
   try {
     const requrl = `${backendUrl}/product/${id}`;
     const response = await axios.get(requrl);
+    // console.log("response from product api frontend is--", response);
     return response.data;
   } catch (error) {
     if (error) {

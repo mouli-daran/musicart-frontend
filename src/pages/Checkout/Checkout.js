@@ -17,11 +17,12 @@ import {
 const Checkout = () => {
   const redirect = useNavigate();
   const { orderfrom } = useParams();
-  const [products, setProducts] = useState(null);
+  const [products, setProducts] = useState([]);
   const [amount, setAmount] = useState(null);
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isFromViewCart, setIsFromViewCart] = useState(false); // Track the source of products
 
   const username = localStorage.getItem("username");
 
@@ -34,19 +35,21 @@ const Checkout = () => {
             return (acc += item.productId.price * item.quantity);
           }, 0);
           setAmount(totalAmount);
+          setIsFromViewCart(true); // Set the source of products
         }
       });
     } else {
       getProductDetails(orderfrom).then((data) => {
         if ((data.status = "SUCCESS")) {
-          setProducts(data.data);
+          setProducts([data.data]);
           setAmount(data.data.price);
+          setIsFromViewCart(false); // Set the source of products
         }
       });
     }
-  }, []);
+  }, [orderfrom]);
 
-  console.log("products in review cart is==---", products);
+  console.log("products in checkout is==---", products);
 
   const handleOrderPlace = async () => {
     // Convert name, address, and paymentMethod to lowercase
@@ -75,7 +78,7 @@ const Checkout = () => {
       }
 
       if (result.status === "SUCCESS") {
-        toast.success(result.message);
+        toast.success("Order created successfully");
         setTimeout(() => {
           redirect("/ordersuccess");
         }, 2000);
@@ -84,6 +87,7 @@ const Checkout = () => {
       }
       console.log("result from order is ---", result);
     } catch (error) {
+      toast.error("Failed to create order..");
       console.error("Error placing order:", error);
       toast.error("Failed to place order. Please try again later.");
     }
@@ -144,48 +148,74 @@ const Checkout = () => {
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value)}
               >
-                <option value="CashOnDelivery">pay on delivery</option>
+                <option value="UPI">pay on delivery</option>
                 <option value="UPI">upi</option>
-                <option value="Card">card</option>
+                <option value="card">card</option>
               </select>
             </div>
             <div className={styles.reviewItems}>
               <span>3. Review items and delivery</span>
               <div className={styles.productGrid}>
                 <div>
-                  {products === null ? (
+                  {products === null || products === undefined ? (
                     <h1>Loading...</h1>
+                  ) : products.length === 0 ? (
+                    <h1>No products found</h1>
                   ) : (
                     products.map((product, index) => (
-                      <div
-                        key={index}
-                        className={styles.productItem}
-                        onClick={() => handleProductClick(product)}
-                      >
-                        {product.productId.image &&
-                          product.productId.image[0] &&
-                          product.productId.image[0].url && (
-                            <img
-                              src={product.productId.image[0].url}
-                              alt={`product-${index}`}
-                              className={styles.productImage}
-                            />
-                          )}
+                      <div key={index} className={styles.productItem}>
+                        {isFromViewCart
+                          ? // Render product images for products from view cart
+                            product.productId.image &&
+                            product.productId.image[0] &&
+                            product.productId.image[0].url && (
+                              <img
+                                src={product.productId.image[0].url}
+                                alt={`product-${index}`}
+                                className={styles.productImage}
+                                onClick={() => handleProductClick(product)}
+                              />
+                            )
+                          : // Render product images for products from buy now
+                            product.image &&
+                            product.image[0] &&
+                            product.image[0].url && (
+                              <img
+                                src={product.image[0].url}
+                                alt={`product-${index}`}
+                                className={styles.productImage}
+                              />
+                            )}
                       </div>
                     ))
                   )}
                 </div>
                 <div className={styles.productText}>
-                  {selectedProduct && (
-                    <div className={styles.selectedProductDetails}>
-                      <span>{selectedProduct.productId.brand}</span>
-                      <span>{selectedProduct.productId.heading}</span>
-                      <span>Colour: {selectedProduct.productId.colour}</span>
-                      <span>{selectedProduct.availale}</span>
+                  {products.map((product, index) => (
+                    <div key={index} className={styles.selectedProductDetails}>
+                      <span>
+                        {isFromViewCart
+                          ? product.productId.brand
+                          : product.brand}
+                      </span>
+                      <span>
+                        {isFromViewCart
+                          ? product.productId.heading
+                          : product.heading}
+                      </span>
+                      <span>
+                        Colour:{" "}
+                        {isFromViewCart
+                          ? product.productId.colour
+                          : product.colour}
+                      </span>
+                      <span>
+                        {isFromViewCart ? product.availale : product.available}
+                      </span>
                       <span>Estimated delivery:</span>
                       <span>Monday-FREE Standard Delivery</span>
                     </div>
-                  )}
+                  ))}
                 </div>
               </div>
             </div>
@@ -230,6 +260,18 @@ const Checkout = () => {
         <Footer />
       </section>
       <MobileNavFooter component={"cart"} />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </>
   );
 };

@@ -54,6 +54,7 @@ const Home = () => {
 
       if (result.status === "SUCCESS") {
         toast.success("Added To Cart");
+        setCartLength((prevLength) => (prevLength || 0) + 1);
       } else {
         toast.error(result.message);
       }
@@ -63,9 +64,9 @@ const Home = () => {
     }
   };
 
-  const productDetailPage = (id, brand, model) => {
-    const productName = brand + model;
-    redirect(`/${productName}/${id}`);
+  const productDetailPage = (id, brand, heading) => {
+    const product = brand;
+    redirect(`/${product}/${id}`);
   };
 
   const handleSort = (e) => {
